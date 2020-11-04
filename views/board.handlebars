@@ -27,6 +27,11 @@
       <img class="avatar-nav-k" id="Avatar{{this.User.id}}" src="{{this.User.image}}">
       {{/each}}
     </div>
+    <div>
+      <a href="/users/{{user.id}}/boards/{{board.id}}/suggestions">
+      <button type="button" class="btn-k btn-edit-k btn">Suggestions</button>
+    </a>
+    </div>
 
 
     <div class="cards-row-k row">
@@ -37,9 +42,14 @@
             {{#each tasks}}
             {{#ifEquals this.status 0}}
             <div ondragstart="dragStart(event, {{this.id}})" draggable="true" id="dragtarget-{{this.id}}">
-              <p class="c-text-k card-text"><img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
-                <a onclick="openEditTask({{this.id}})"><i class="fas fa-pencil-alt"></i>&nbsp;</a>
-                <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i></p>
+              <p class="c-text-k card-text">
+                <img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">
+                &nbsp; {{this.desc}} &nbsp;
+                <a onclick="openEditTask({{this.id}})">
+                  <i class="fas fa-pencil-alt"></i>&nbsp;
+                </a>
+                <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i>
+              </p>
             </div>
             {{/ifEquals}}
 

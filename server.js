@@ -3,7 +3,7 @@ const Handlebars = require("handlebars")
 const expressHandlebars = require("express-handlebars")
 const { allowInsecurePrototypeAccess } = require("@handlebars/allow-prototype-access")
 
-const { Board, Task, User, db } = require("./models/models")
+const { Board, Task, User, Suggestion, db } = require("./models/models")
 const { request } = require("express")
 
 const app = express()
@@ -24,7 +24,7 @@ const app = express()
 const hbs = expressHandlebars.create({
     helpers: {
         removeUser: function() {
-            
+
         }
     },
     handlebars: allowInsecurePrototypeAccess(Handlebars)
@@ -108,8 +108,8 @@ app.get(['/users/:user_id/boards'], async(req, res) => {
             const board = await Board.findByPk(b.id)
             const tasks = await board.getTasks({ include: { model: User } })
             tasks
-            .filter(task => task.User)
-            .map((task) => (users[task.User.id] = task.User.image))
+                .filter(task => task.User)
+                .map((task) => (users[task.User.id] = task.User.image))
             return {
                 boardId: b.id,
                 users: users
@@ -153,7 +153,7 @@ app.get(['/users/:user_id/boards/:board_id/delete'], async(req, res) => {
 app.post('/users/:user_id/boards/:board_id/tasks/create', async(req, res) => {
         const board = await Board.findByPk(req.params.board_id)
         const user = await User.findByPk(req.params.user_id)
-        if(req.body.selectpicker == "no") {
+        if (req.body.selectpicker == "no") {
             await Task.create({ desc: req.body.desc, status: 0, BoardId: board.id, UserId: null })
         } else {
             const selectUser = await User.findByPk(req.body.selectpicker)
@@ -166,8 +166,8 @@ app.post(['/users/:user_id/boards/:board_id/tasks/:task_id/edit'], async(req, re
         const task = await Task.findByPk(req.params.task_id)
         const board = await Board.findByPk(req.params.board_id)
         const user = await User.findByPk(req.params.user_id)
-        if(req.body.selectpicker == "no") {
-            await task.update({ desc: req.body.desc, status: req.body.move, BoardId: board.id, UserId: null})
+        if (req.body.selectpicker == "no") {
+            await task.update({ desc: req.body.desc, status: req.body.move, BoardId: board.id, UserId: null })
         } else {
             const selectUser = await User.findByPk(req.body.selectpicker)
             await task.update({ desc: req.body.desc, status: req.body.move, BoardId: board.id, UserId: selectUser.id })
@@ -184,11 +184,91 @@ app.get(['/users/:user_id/boards/:board_id/tasks/:task_id/delete'], async(req, r
     })
     //Update status
 app.post('/users/:task_id/updatetask', async(req, res) => {
-    const task = await Task.findByPk(req.params.task_id)
-    await task.update({ status: req.body.status })
-    res.send()
+        const task = await Task.findByPk(req.params.task_id)
+        await task.update({ status: req.body.status })
+        res.send()
+    })
+    // Render Suggestionspage
+app.get('/users/:user_id/boards/:board_id/suggestions', async(req, res) => {
+        const board = await Board.findByPk(req.params.board_id)
+        const user = await User.findByPk(req.params.user_id)
+        const users = await User.findAll({
+            include: 'suggestions',
+            nest: true
+        })
+        const suggestions = await board.getSuggestions({ include: { model: User } })
+        res.render('suggestions', { board, user, users, suggestions })
+    })
+    //Create suggestion
+app.post('/users/:user_id/boards/:board_id/suggestions/create', async(req, res) => {
+        const board = await Board.findByPk(req.params.board_id)
+        const user = await User.findByPk(req.params.user_id)
+        await Suggestion.create({ text: req.body.text, upVote: ',', downVote: ',', BoardId: board.id, UserId: user.id })
+
+        res.redirect(`/users/${user.id}/boards/${board.id}/suggestions`)
+    })
+    //Vote 
+app.post('/users/:user_id/suggestions/:suggestion_id/vote', async(req, res) => {
+    const action = req.body.action;
+    const task = req.body.task;
+    const suggestionId = req.params.suggestion_id
+    const userId = req.params.user_id
+    if (action === 'upvote') {
+        await upVote(task, userId, suggestionId)
+        await downVote("remove", userId, suggestionId)
+    } else if (action === 'downvote') {
+        await downVote(task, userId, suggestionId)
+        await upVote("remove", userId, suggestionId)
+    }
+    res.send();
 })
 
+async function upVote(task, userId, suggestionId) {
+    const suggestion = await Suggestion.findByPk(suggestionId);
+    if (task === 'add' && suggestion.upVote.indexOf(`,${userId},`) === -1) {
+        const upvotes = suggestion.upVote.trim() + `,${userId},`
+        await suggestion.update({ upVote: upvotes })
+    } else if ('remove') {
+        const removeUpVote = suggestion.upVote.replace(`,${userId},`, '').trim()
+        await suggestion.update({ upVote: removeUpVote })
+    }
+}
+
+async function downVote(task, userId, suggestionId) {
+    const suggestion = await Suggestion.findByPk(suggestionId);
+    if (task === 'add' && suggestion.downVote.indexOf(`,${userId},`) === -1) {
+        const downvotes = suggestion.downVote.trim() + `,${userId},`
+        await suggestion.update({ downVote: downvotes })
+    } else if ('remove') {
+        const removeDownVote = suggestion.downVote.replace(`,${userId},`, '').trim()
+        await suggestion.update({ downVote: removeDownVote })
+    }
+}
+//     //Upvote 
+// app.post('/users/:user_id/suggestions/:suggestion_id/upvote', async(req, res) => {
+//         const suggestion = await Suggestion.findByPk(req.params.suggestion_id)
+//         if (suggestion.upVote.indexOf(`,${req.params.user_id},`) === -1) {
+//             const upvotes = suggestion.upVote + `,${req.params.user_id},`
+//             await suggestion.update({ upVote: upvotes })
+//         } else {
+//             const removeUpVote = suggestion.upVote.replace(`,${req.params.user_id},`, '')
+//             console.log('remov')
+//             await suggestion.update({ upVote: removeUpVote })
+//         }
+//         res.send()
+//     })
+//     //Downvote
+// app.post('/users/:user_id/suggestions/:suggestion_id/downvote', async(req, res) => {
+//     const suggestion = await Suggestion.findByPk(req.params.suggestion_id)
+//     if (suggestion.downVote.indexOf(`,${req.params.user_id},`) === -1) {
+//         const downvotes = suggestion.downVote + `,${req.params.user_id},`
+//         await suggestion.update({ downVote: downvotes })
+//     } else {
+//         const removeDownVote = suggestion.downVote.replace(`,${req.params.user_id},`, '')
+//         await suggestion.update({ downVote: removeDownVote })
+//     }
+//     res.send()
+// })
 
 //this is the point where the server is initialised. 
 app.listen(process.env.PORT || 3000, () => {
@@ -209,7 +289,8 @@ app.listen(process.env.PORT || 3000, () => {
         await Task.create({ "desc": "Go Shopping", "status": 0, "BoardId": board2.id, UserId: krystyna.id })
         await Task.create({ "desc": "Take bins out", "status": 0, "BoardId": board2.id, UserId: josie.id })
         await Task.create({ "desc": "Eat food", "status": 0, "BoardId": board2.id, UserId: sarah.id })
-
+        await Suggestion.create({ "text": "Add a suggestions page", upVote: '', "downVote": '', "BoardId": board2.id, UserId: josie.id })
+        await Suggestion.create({ "text": "Add a suggestions page2", upVote: '', "downVote": '', "BoardId": board2.id, UserId: sarah.id })
     }).catch(console.error)
     console.log('port = ', process.env.PORT)
 })
