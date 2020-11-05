@@ -163,11 +163,13 @@ app.get('/users/:user_id/boards/:board_id/suggestions', async(req, res) => {
         const users = await User.findAll({
             include: 'suggestions',
             nest: true,
+        })
+        const suggestions = await board.getSuggestions({
+            include: { model: User },
             order: [
-                ['id', 'DESC']
+                ['id', 'ASC']
             ]
         })
-        const suggestions = await board.getSuggestions({ include: { model: User } })
         res.render('suggestions', { board, user, users, suggestions })
     })
     //Create suggestion
