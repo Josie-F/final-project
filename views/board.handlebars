@@ -13,6 +13,7 @@
             class="sr-only">(current)</span></a>
       </li>
     </ul>
+    <a class="nav-link text-right ml-3 sign-out" href="/">Sign out</a>
     <a href="/users/{{user.id}}/profilepage"><img class="avatar-nav-k float-right" src={{user.image}} width="35"
         height="35" alt=""></a>
   </div>
@@ -27,19 +28,29 @@
       <img class="avatar-nav-k" id="Avatar{{this.User.id}}" src="{{this.User.image}}">
       {{/each}}
     </div>
+    <div class="suggest-div">
+      <a href="/users/{{user.id}}/boards/{{board.id}}/suggestions">
+        <button type="button" class="btn-k btn-edit-k btn"><i class="fas fa-star"></i> Suggestions</button>
+      </a>
+    </div>
 
 
     <div class="cards-row-k row">
       <div class="col-sm-4">
-        <div class="card card-board-k card-drag" >
+        <div class="card card-board-k card-drag">
           <div class="card-header card-header-k">TO DO</div>
           <div class="card-todo-k card-body" id="0" ondrop="drop(event, this)" ondragover="allowDrop(event)">
             {{#each tasks}}
             {{#ifEquals this.status 0}}
             <div ondragstart="dragStart(event, {{this.id}})" draggable="true" id="dragtarget-{{this.id}}">
-              <p class="c-text-k card-text"><img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
-                <a onclick="openEditTask({{this.id}})"><i class="fas fa-pencil-alt"></i>&nbsp;</a>
-                <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i></p>
+              <p class="c-text-k card-text">
+                <img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">
+                &nbsp; {{this.desc}} &nbsp;
+                <a onclick="openEditTask({{this.id}})">
+                  <i class="fas fa-pencil-alt"></i>&nbsp;
+                </a>
+                <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i>
+              </p>
             </div>
             {{/ifEquals}}
 
@@ -60,23 +71,26 @@
                       <label for="assign">Assign User</label>
                       <select name="selectpicker" class="form-control" id="assign">
                         {{#each ../users}}
-                          {{#ifEquals this.id ../this.User.id}} 
-                            <option selected="selected" value="{{this.id}}">{{this.name}}</option> 
-                              {{else}}
-                                <option value="{{this.id}}">{{this.name}}</option>
-                          {{/ifEquals}}
+                        {{#ifEquals this.id ../this.User.id}}
+                        <option selected="selected" value="{{this.id}}">{{this.name}}</option>
+                        {{else}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                        {{/ifEquals}}
                         {{/each}}
                         {{#ifEquals this.User.id null}}<option selected="selected" value="no">No User</option>
-                          {{else}} <option value="no">No User</option> {{/ifEquals}}
-                        
+                        {{else}} <option value="no">No User</option> {{/ifEquals}}
+
                       </select>
                     </div>
                     <div class="form-group">
                       <label for="move">Move to</label>
                       <select class="form-control" name="move" id="move">
-                        {{#ifEquals this.status 0}} <option selected="selected" value="0">To Do</option> {{else}} <option value="0">To Do</option> {{/ifEquals}}
-                        {{#ifEquals this.status 1}} <option selected="selected" value="1">In Progress</option> {{else}} <option value="1">In Progress</option> {{/ifEquals}}
-                        {{#ifEquals this.status 2}} <option selected="selected" value="2">Done</option> {{else}} <option value="2">Done</option> {{/ifEquals}}
+                        {{#ifEquals this.status 0}} <option selected="selected" value="0">To Do</option> {{else}}
+                        <option value="0">To Do</option> {{/ifEquals}}
+                        {{#ifEquals this.status 1}} <option selected="selected" value="1">In Progress</option> {{else}}
+                        <option value="1">In Progress</option> {{/ifEquals}}
+                        {{#ifEquals this.status 2}} <option selected="selected" value="2">Done</option> {{else}} <option
+                          value="2">Done</option> {{/ifEquals}}
                       </select>
                     </div>
                     <button type="submit" class="btn-k btn-edit-k btn"><i class="fas fa-check"></i>&nbsp;
@@ -122,7 +136,8 @@
             {{#each tasks}}
             {{#ifEquals this.status 1}}
             <div ondragstart="dragStart(event, {{this.id}})" draggable="true" id="dragtarget-{{this.id}}">
-              <p class="c-text-k card-text "><img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
+              <p class="c-text-k card-text "><img class="avatar-k TaskImage{{this.User.id}}"
+                  src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
                 <a onclick="openEditTask({{this.id}})"><i class="fas fa-pencil-alt"></i>&nbsp;</a>
                 <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i></p>
             </div>
@@ -133,13 +148,14 @@
       </div>
 
       <div class="col-sm-4">
-        <div class="card card-board-k card-drag" >
+        <div class="card card-board-k card-drag">
           <div class="card-header card-header-k">DONE</div>
           <div class="card-done-k card-body" id="2" ondrop="drop(event, this)" ondragover="allowDrop(event)">
             {{#each tasks}}
             {{#ifEquals this.status 2}}
             <div ondragstart="dragStart(event, {{this.id}})" draggable="true" id="dragtarget-{{this.id}}">
-              <p class="c-text-k card-text"><img class="avatar-k TaskImage{{this.User.id}}" src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
+              <p class="c-text-k card-text"><img class="avatar-k TaskImage{{this.User.id}}"
+                  src="{{this.User.image}}">&nbsp; {{this.desc}} &nbsp;
                 <a onclick="openEditTask({{this.id}})"><i class="fas fa-pencil-alt"></i>&nbsp;</a>
                 <i onclick="openTaskDelete({{this.id}})" class="fas fa-trash-alt"></i></p>
             </div>
@@ -151,13 +167,21 @@
     </div>
 
     <div class="btn-bottom-k d-flex flex-wrap justify-content-center">
-      <button onclick="openAddTask()" type="button" class=" btn-k btn"><i class="fas fa-plus"></i>&nbsp; Add
+      <div class="suggest-div-web">
+            <a href="/users/{{user.id}}/boards/{{board.id}}/suggestions">
+              <button type="button" class="btn btn-k back-k"><i class="fas fa-star"></i>&nbsp;Suggestions</button>
+            </a>
+        </div>
+        <button onclick="openAddTask()" type="button" class=" btn-k btn"><i class="fas fa-plus"></i>&nbsp; Add
         Task</button>
       <button onclick="openBoardEdit()" type="button" class="btn btn-k back-k"><i class="fas fa-check"></i>&nbsp;
         Edit Board</button>
       <button onclick="openBoardDelete()" type="button" class="btn btn-k back-k"><i class="fas fa-times"></i>&nbsp;
         Delete Board</button>
+         
+   
     </div>
+    
 
 
     {{!---Add Task Pop Up Card---}}
@@ -223,17 +247,17 @@
               <input type="url" class="form-control" placeholder="Picture url" name="image" value="{{board.image}}">
             </div>
             <div class="d-flex justify-content-between align-items-center">
-            <button type="submit" class="btn-k btn"><i class="fas fa-check"></i>&nbsp;
-              Submit</button>
-            <i onclick="closeBoardEdit()" class="far fa-times-circle fa-lg"></i>
-          </div>
+              <button type="submit" class="btn-k btn"><i class="fas fa-check"></i>&nbsp;
+                Submit</button>
+              <i onclick="closeBoardEdit()" class="far fa-times-circle fa-lg"></i>
+            </div>
           </form>
         </div>
       </div>
     </div>
 
   </div>
-  </main>
+</main>
 
 
 
@@ -274,42 +298,42 @@
   }
 
   //Drag and Drop
-function dragStart(event, taskId) {
-  event.dataTransfer.setData("Text", event.target.id);
-  event.dataTransfer.setData("TaskId", taskId);
-}
+  function dragStart(event, taskId) {
+    event.dataTransfer.setData("Text", event.target.id);
+    event.dataTransfer.setData("TaskId", taskId);
+  }
 
-function allowDrop(event) {
-  
-  event.preventDefault();
-}
+  function allowDrop(event) {
 
-function drop(event, el) {
-  event.preventDefault();
-  var data = event.dataTransfer.getData("Text");
-  var taskId = event.dataTransfer.getData("TaskId");
-  el.appendChild(document.getElementById(data, taskId));
-  console.log(taskId)
-  const postRequest = {
+    event.preventDefault();
+  }
+
+  function drop(event, el) {
+    event.preventDefault();
+    var data = event.dataTransfer.getData("Text");
+    var taskId = event.dataTransfer.getData("TaskId");
+    el.appendChild(document.getElementById(data, taskId));
+    console.log(taskId)
+    const postRequest = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ status: el.id})
+      body: JSON.stringify({ status: el.id })
     }
     fetch(`/users/${taskId}/updatetask`, postRequest)
   }
 
-$('*[id*=Avatar]').each(function() {
-$('[id="' + this.id + '"]:gt(0)').remove();
-})
+  $('*[id*=Avatar]').each(function () {
+    $('[id="' + this.id + '"]:gt(0)').remove();
+  })
 
-$('#Avatar').hide()
-$('.TaskImage').css('visibility','hidden')
+  $('#Avatar').hide()
+  $('.TaskImage').css('visibility', 'hidden')
 
-$(window).on('load', function()  {
+  $(window).on('load', function () {
     $("#container").show();
-});
+  });
 
 
 </script>

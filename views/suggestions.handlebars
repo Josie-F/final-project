@@ -1,0 +1,163 @@
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a href="/">
+        <img class="logo" src="/images/Star.jpg" width="35" height="35" alt="Logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link text-right ml-3" href="/users/{{user.id}}/boards">All Boards <span
+                        class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <a class="nav-link text-right ml-3 sign-out" href="/">Sign out</a>
+        <a href="/users/{{user.id}}/profilepage"><img class="avatar-nav-k float-right" src={{user.image}} width="35"
+                height="35" alt=""></a>
+    </div>
+</nav>
+
+<main>
+    <div class="suggestion-board-j">
+        <p id="board-title-j">Suggestions for {{board.title}}</p>
+        <div "card-todo-k card-body">
+            {{#each suggestions}}
+            <div id='count'
+                onload="getVoteCount('{{this.upVote}}', '{{this.id}}', '{{this.downVote}}', '{{../user.id}}', {{this.UserId}})">
+                <p class="suggest-text-k card-text" id="{{this.id}}">
+                    &nbsp; {{this.text}} &nbsp;
+                    <a href="/users/{{../user.id}}/boards/{{../board.id}}/suggestions/{{this.id}}/delete"
+                        id="bin-{{this.id}}" style="display: none;"><i class="fas fa-trash-alt"
+                            onclick="return confirm('Are you sure you want to delete this?')"></i></a>
+                    <i class="vote-placement">
+                        <i onclick="vote({{this.id}}, this, {{../user.id}})" id="upvote-{{this.id}}"
+                            class="far fa-thumbs-up"></i>&nbsp;
+                        <i id="upvote-count-{{this.id}}"></i>
+
+                        <i onclick="vote({{this.id}}, this, {{../user.id}})" id="downvote-{{this.id}}"
+                            class="far fa-thumbs-down"></i>
+                        <i id="downvote-count-{{this.id}}"></i>
+                    </i>
+                </p>
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+    <div class="btn-bottom-k d-flex flex-wrap justify-content-center">
+        <a href="/users/{{user.id}}/boards/{{board.id}}"><button type="submit" class="btn suggestion-button"><i class="far fa-arrow-alt-circle-left"></i>&nbsp;
+            Back</button></a>
+        <button onclick="addSuggestion()" type="button" class="btn suggestion-button"><i class="fas fa-plus"></i>&nbsp;
+            New Suggestion</button>
+    </div>
+
+
+
+
+
+    <div id="add-suggestion" class="form-popup-k col-sm-4">
+        <div class="card card-board-k card-popup">
+            <div class="card-header card-header-k">Add a Suggestion</div>
+            <div class="card-body">
+                <form action="/users/{{user.id}}/boards/{{board.id}}/suggestions/create" method="POST">
+                    <div class="form-group">
+                        <label for="task-desc">Your Suggestion:</label>
+                        <input name="text" type="text" class="form-control" id="suggestion-text"
+                            placeholder="Share your idea">
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="submit" class=" btn-k btn"><i class="fas fa-plus"></i>&nbsp; Submit</button>
+                        <i onclick="closeAddSuggestion()" class="far fa-times-circle fa-lg"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+
+    function addSuggestion() {
+        document.getElementById("add-suggestion").style.display = "block";
+    }
+    function closeAddSuggestion() {
+        document.getElementById("add-suggestion").style.display = "none";
+    }
+    function vote(id, el, userId) {
+        if (el.id === `upvote-${id}`) {
+            if (el.classList.contains('thumbs-up-clicked')) {
+                el.className = "far fa-thumbs-up "
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'upvote', task: 'remove' })
+                }
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
+            } else {
+                if (document.getElementById(`downvote-${id}`).classList.contains('thumbs-down-clicked')) {
+                    document.getElementById(`downvote-${id}`).className = "far fa-thumbs-down"
+                }
+                el.className = "far fa-thumbs-up thumbs-up-clicked"
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'upvote', task: 'add' })
+                }
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
+            }
+        } else {
+            if (el.classList.contains('thumbs-down-clicked')) {
+                el.className = "far fa-thumbs-down"
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'downvote', task: 'remove' })
+                }
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
+            } else {
+                if ((document.getElementById(`upvote-${id}`).classList.contains('thumbs-up-clicked'))) {
+                    document.getElementById(`upvote-${id}`).className = "far fa-thumbs-up"
+                }
+                el.className = "far fa-thumbs-down thumbs-down-clicked"
+                const postRequest = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'downvote', task: 'add' })
+                }
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
+            }
+        }
+    }
+
+    function getVoteCount(upVote, id, downVote, userId, creator) {
+        const up = upVote.split(',').filter(value => value !== '')
+        document.getElementById(`upvote-count-${id}`).textContent = up.length
+        const down = downVote.split(',').filter(value => value !== '')
+        document.getElementById(`downvote-count-${id}`).textContent = down.length
+
+        if (up.includes(`${userId}`)) {
+            document.getElementById(`upvote-${id}`).className = "far fa-thumbs-up thumbs-up-clicked"
+        }
+        if (down.includes(`${userId}`)) {
+            document.getElementById(`downvote-${id}`).className = "far fa-thumbs-down thumbs-down-clicked"
+        }
+        if (creator == userId) {
+            document.getElementById(`bin-${id}`).style.display = "inline";
+
+        }
+    }
+    $(function () {
+        $('#count[onload]').trigger('onload')
+    })
+
+</script>

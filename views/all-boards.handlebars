@@ -13,6 +13,7 @@
                         class="sr-only">(current)</span></a>
             </li>
         </ul>
+        <a class="nav-link text-right ml-3 sign-out" href="/">Sign out</a>
         <a href="/users/{{user.id}}/profilepage"><img class="avatar-nav-k float-right" src={{user.image}} width="35"
                 height="35" alt=""></a>
     </div>
@@ -34,31 +35,31 @@
                         <div class="card card-board-s d-block m-2" style="min-height: 20rem">
                             <div class="card-body card-board-body-s">
                                 <h3 class="card-title text-center">{{this.title}}</h3>
-                                <img class="card-img card-board-image-s"
-                                    src="{{this.image}}">
+                                <img class="card-img card-board-image-s" src="{{this.image}}">
                                 </img>
                                 <div class="card-subtitle">
                                     <h6 class="my-2 py-2 text-center">{{this.tasks.length}} tasks</h6>
-                                     {{#each ../avatars}}
-                                        {{#ifEquals this.boardId ../id}}
-                                            {{#each users}}
-                                                <img class="avatar-j" src="{{.}}" width="40px" height="40px">
-                                            {{/each}}
-                                        {{/ifEquals}}
-                                     {{/each}}
+                                    {{#each ../avatars}}
+                                    {{#ifEquals this.boardId ../id}}
+                                    {{#each users}}
+                                    <img class="avatar-j" src="{{.}}" width="40px" height="40px">
+                                    {{/each}}
+                                    {{/ifEquals}}
+                                    {{/each}}
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </a>
+                </div>
+                {{/each}}
             </div>
-            {{/each}}
+            <div class="p-3 control"><i class="fa fa-2x text-muted fa-chevron-right"></i></div>
         </div>
-        <div class="p-3 control"><i class="fa fa-2x text-muted fa-chevron-right"></i></div>
-  </div>
 
-    <button class="btn btn-j btn-secondary my-4 btn-add-board-s" onclick="createBoard()" type="button">Add Board</button>
+        <button class="btn btn-j btn-secondary my-4 btn-add-board-s" onclick="createBoard()" type="button">Add
+            Board</button>
 
-</div>
+    </div>
 </div>
 {{!-- Show on Mobile --}}
 <div class="container d-flex flex-column justify-center">
@@ -72,17 +73,16 @@
                         <div class="card card-board-s d-block" style="min-height: 20rem">
                             <div class="card-body card-board-body-s">
                                 <h3 class="card-title text-center">{{this.title}}</h3>
-                                <img class="card-img card-board-image-s"
-                                    src="{{this.image}}"> 
+                                <img class="card-img card-board-image-s" src="{{this.image}}">
                                 <div class="card-subtitle">
                                     <h6 class="my-2 py-2 text-center">{{this.tasks.length}} tasks</h6>
                                     {{#each ../avatars}}
-                                        {{#ifEquals this.boardId ../id}}
-                                            {{#each users}}
-                                                <img class="avatar-j" src="{{.}}" width="40px" height="40px">
-                                            {{/each}}
-                                        {{/ifEquals}}
-                                     {{/each}}   
+                                    {{#ifEquals this.boardId ../id}}
+                                    {{#each users}}
+                                    <img class="avatar-j" src="{{.}}" width="40px" height="40px">
+                                    {{/each}}
+                                    {{/ifEquals}}
+                                    {{/each}}
                                 </div>
                             </div>
                         </div>
@@ -123,25 +123,24 @@
     }
 
     // Carousel
-        $('.toggle-all').on('click', function() {
+    $('.toggle-all').on('click', function () {
         $('#infinite_carousel .row').toggleClass('flex-nowrap');
         $('#infinite_carousel .control').toggleClass('d-none');
         $(this).html($('#infinite_carousel .row').hasClass('flex-nowrap') ? '<i class="fa fa-th" aria-hidden="true"></i> Show All' : '<i class="fa fa-chevron-right" aria-hidden="true"></i> Show Slider');
-        });
+    });
 
-        $('#infinite_carousel .fa-chevron-right').on('click', () => {
+    $('#infinite_carousel .fa-chevron-right').on('click', () => {
         let $infinite_carousel_row = $('#infinite_carousel .row');
         let $col = $infinite_carousel_row.find('.col-tag:first');
         $infinite_carousel_row.append($col[0].outerHTML);
         $col.remove();
-        });
+    });
 
-        $('#infinite_carousel .fa-chevron-left').on('click', () => {
+    $('#infinite_carousel .fa-chevron-left').on('click', () => {
         let $infinite_carousel_row = $('#infinite_carousel .row');
         let $col = $infinite_carousel_row.find('.col-tag:last');
         $infinite_carousel_row.prepend($col[0].outerHTML);
         $col.remove();
-        });
+    });
 
 </script>
-    
