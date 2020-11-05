@@ -4,7 +4,7 @@ const path = require('path')
 
 // Create new database, linked with Sequelize, e.g. const db = new Sequelize("sqlite::memory:")
 // You can change the configuration of the database depending if your environment is 'test','production' etc.
-process.env.NODE_ENV = 'production'
+//process.env.NODE_ENV = 'production'
 const connectionSettings = {
     test: { dialect: 'sqlite', storage: 'sqlite::memory:' },
     dev: { dialect: 'sqlite', storage: path.join(__dirname, 'data.db'), logging: false },
