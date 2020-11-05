@@ -162,7 +162,10 @@ app.get('/users/:user_id/boards/:board_id/suggestions', async(req, res) => {
         const user = await User.findByPk(req.params.user_id)
         const users = await User.findAll({
             include: 'suggestions',
-            nest: true
+            nest: true,
+            order: [
+                ['id', 'DESC']
+            ]
         })
         const suggestions = await board.getSuggestions({ include: { model: User } })
         res.render('suggestions', { board, user, users, suggestions })
