@@ -13,33 +13,35 @@
             class="sr-only">(current)</span></a>
       </li>
     </ul>
+    <a class="nav-link text-right ml-3 sign-out" href="/">Sign out</a>
     <a href="/users/{{user.id}}/profilepage"><img class="avatar-nav-k float-right" src={{user.image}} width="35"
         height="35" alt=""></a>
   </div>
 </nav>
 
 <div class="container">
-<div class="userprofile-img-j" style="background-image: url({{user.image}});">
-</div>
-<div class="d-flex justify-content-center">
-<div class="main-board-k edit-user-form-j" id="editUser">
-  <form action="/users/{{user.id}}/profilepage/edit" method="POST" class="edit-user-container-j">
-    <label><br>Name:<br></label>
-    <input type="text" placeholder="Username" name="name" value="{{user.name}}" required>
+  <div class="userprofile-img-j" style="background-image: url({{user.image}});">
+  </div>
+  <div class="d-flex justify-content-center">
+    <div class="main-board-k edit-user-form-j" id="editUser">
+      <form action="/users/{{user.id}}/profilepage/edit" method="POST" class="edit-user-container-j">
+        <label><br>Name:<br></label>
+        <input type="text" placeholder="Username" name="name" value="{{user.name}}" required>
 
-    <lavel><br>Avatar:<br></lavel>
-    <input type="url" placeholder="Avatar Url" name="image" value="{{user.image}}" required>
+        <lavel><br>Avatar:<br></lavel>
+        <input type="url" placeholder="Avatar Url" name="image" value="{{user.image}}" required>
 
-    <button type="submit" class="btn-j">Edit User</button>
-    <a href="/users/{{user.id}}/profilepage/delete" onclick="return confirm('Are you sure you want to delete this?')">
-      <button type="button" class="btn-j">Delete
-        User
-      </button>
-    </a>
-    <br>
-    <br>
-    <a href="/">
-      <button type="button" class="btn-j">Log out</button>
-    </a>
-  </form>
-</div>
+        <button type="submit" class="btn-j">Edit User</button>
+        <a href="/users/{{user.id}}/profilepage/delete"
+          onclick="return confirm('Are you sure you want to delete this?')">
+          <button type="button" class="btn-j">Delete
+            User
+          </button>
+        </a>
+        <br>
+        <br>
+        <a href="/">
+          <button type="button" class="btn-j">Log out</button>
+        </a>
+      </form>
+    </div>

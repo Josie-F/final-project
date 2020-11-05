@@ -34,6 +34,16 @@ a:visited {
     border-radius: 1rem;
 }
 
+.suggestion-board-j {
+    margin-top: 3rem;
+    margin-bottom: 4rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    background-color: #F6F3F4;
+    border: solid #ded3d7;
+    border-radius: 1rem;
+}
+
 .card-todo-k {
     background-color: #cbe7cb;
 }
@@ -54,11 +64,27 @@ a:visited {
     background-color: #f8f9fa;
 }
 
+.suggest-text-k {
+    border: 1px solid #999999;
+    margin: 1rem;
+    margin-bottom: 1rem !important;
+    padding: .5rem;
+    border-radius: .5rem;
+    background-color: #f8f9fa;
+}
+
 #board-title-k {
     font-size: 2rem;
     text-align: center;
     margin-bottom: 1rem;
     margin-top: 2rem;
+}
+
+#board-title-j {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 .card-board-k {
@@ -105,6 +131,23 @@ a:visited {
     margin: 1rem;
 }
 
+.suggestion-button {
+    border-radius: 1.3rem;
+    box-shadow: 3px 3px 5px #737373;
+    background-color: #5d495488;
+    margin: 1rem;
+}
+
+.suggest-div {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.suggest-div-web {
+    display: none;
+}
+
 .btn-k:hover {
     background-color: #6c757d;
     color: #fcfcfc
@@ -134,10 +177,10 @@ a:visited {
 }
 
 #delete-task,
-#delete-board, #edit-board {
+#delete-board,
+#edit-board {
     min-height: 14rem;
 }
-
 
 .navbar {
     background-color: #67515D
@@ -247,6 +290,7 @@ h4 {
 .card-body-j:hover .card-body-tooltip-j {
     visibility: visible;
 }
+
 .card-body-j {
     margin: .5rem;
 }
@@ -354,6 +398,28 @@ h4 {
     margin: 0.2rem;
 }
 
+.btns {
+    font-size: 32px;
+    margin: 20px;
+}
+
+.thumbs-up-clicked {
+    color: rgba(66, 163, 95, 0.918);
+}
+
+.thumbs-down-clicked {
+    color: red;
+}
+
+.vote-placement {
+    display: inherit;
+    text-align: right;
+}
+
+.sign-out {
+    font-size: medium;
+}
+
 @media screen and (min-width: 40em) {
     .select-user-form-j {
         width: 60vw;
@@ -363,6 +429,12 @@ h4 {
     }
     .edit-user-form-j {
         width: 60vw;
+    }
+    .suggestion-board-j {
+        width: 50%;
+        justify-content: center;
+        margin: auto;
+        margin-top: 3rem;
     }
 }
 
@@ -375,6 +447,26 @@ h4 {
     }
     .edit-user-form-j {
         width: 30vw;
+    }
+    .suggest-div {
+        display: none;
+    }
+    .suggest-div-web {
+        display: block;
+        margin: none;
+        position: relative;
+        text-align: right;
+        float: right;
+    }
+    .suggestion-board-j {
+        width: 50%;
+        justify-content: center;
+        margin: auto;
+        margin-top: 3rem;
+    }
+    .vote-placement {
+        display: inline;
+        float: right;
     }
 }
 
@@ -403,7 +495,18 @@ h4 {
 
 /*---Tablet---*/
 
-@media screen and (min-width: 768px) and (max-width: 1023px) {}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .suggest-div {
+        display: none
+    }
+    .suggest-div-web {
+        display: block;
+        margin: none;
+        position: relative;
+        text-align: right;
+        float: right;
+    }
+}
 
 
 /*---Ipad Pro---*/
