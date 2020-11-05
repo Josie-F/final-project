@@ -13,6 +13,7 @@
                         class="sr-only">(current)</span></a>
             </li>
         </ul>
+        <a class="nav-link text-right ml-3 sign-out" href="/">Sign out</a>
         <a href="/users/{{user.id}}/profilepage"><img class="avatar-nav-k float-right" src={{user.image}} width="35"
                 height="35" alt=""></a>
     </div>
@@ -23,17 +24,22 @@
         <p id="board-title-j">Suggestions for {{board.title}}</p>
         <div "card-todo-k card-body">
             {{#each suggestions}}
-            <div id='count' onload="getVoteCount('{{this.upVote}}', '{{this.id}}', '{{this.downVote}}')">
+            <div id='count'
+                onload="getVoteCount('{{this.upVote}}', '{{this.id}}', '{{this.downVote}}', '{{../user.id}}', {{this.UserId}})">
                 <p class="suggest-text-k card-text" id="{{this.id}}">
                     &nbsp; {{this.text}} &nbsp;
-                    <i onclick="vote({{this.id}}, this, {{../user.id}})" id="upvote-{{this.id}}"
-                        class="far fa-thumbs-up"></i>&nbsp;
-                    <i id="upvote-count-{{this.id}}"></i>
+                    <a href="/users/{{../user.id}}/boards/{{../board.id}}/suggestions/{{this.id}}/delete"
+                        id="bin-{{this.id}}" style="display: none;"><i class="fas fa-trash-alt"
+                            onclick="return confirm('Are you sure you want to delete this?')"></i></a>
+                    <i class="vote-placement">
+                        <i onclick="vote({{this.id}}, this, {{../user.id}})" id="upvote-{{this.id}}"
+                            class="far fa-thumbs-up"></i>&nbsp;
+                        <i id="upvote-count-{{this.id}}"></i>
 
-                    <i onclick="vote({{this.id}}, this, {{../user.id}})" id="downvote-{{this.id}}"
-                        class="far fa-thumbs-down"></i>
-                    <i id="downvote-count-{{this.id}}"></i>
-
+                        <i onclick="vote({{this.id}}, this, {{../user.id}})" id="downvote-{{this.id}}"
+                            class="far fa-thumbs-down"></i>
+                        <i id="downvote-count-{{this.id}}"></i>
+                    </i>
                 </p>
             </div>
             {{/each}}
@@ -90,12 +96,10 @@
                     },
                     body: JSON.stringify({ action: 'upvote', task: 'remove' })
                 }
-                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest)
-                document.getElementById(`upvote-count-${id}`).textContent = Number(document.getElementById(`upvote-count-${id}`).textContent) - 1
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
             } else {
                 if (document.getElementById(`downvote-${id}`).classList.contains('thumbs-down-clicked')) {
                     document.getElementById(`downvote-${id}`).className = "far fa-thumbs-down"
-                    document.getElementById(`downvote-count-${id}`).textContent = Number(document.getElementById(`downvote-count-${id}`).textContent) - 1
                 }
                 el.className = "far fa-thumbs-up thumbs-up-clicked"
                 const postRequest = {
@@ -105,8 +109,7 @@
                     },
                     body: JSON.stringify({ action: 'upvote', task: 'add' })
                 }
-                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest)
-                document.getElementById(`upvote-count-${id}`).textContent = Number(document.getElementById(`upvote-count-${id}`).textContent) + 1
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
             }
         } else {
             if (el.classList.contains('thumbs-down-clicked')) {
@@ -118,12 +121,10 @@
                     },
                     body: JSON.stringify({ action: 'downvote', task: 'remove' })
                 }
-                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest)
-                document.getElementById(`downvote-count-${id}`).textContent = Number(document.getElementById(`downvote-count-${id}`).textContent) - 1
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
             } else {
                 if ((document.getElementById(`upvote-${id}`).classList.contains('thumbs-up-clicked'))) {
                     document.getElementById(`upvote-${id}`).className = "far fa-thumbs-up"
-                    document.getElementById(`upvote-count-${id}`).textContent = Number(document.getElementById(`upvote-count-${id}`).textContent) - 1
                 }
                 el.className = "far fa-thumbs-down thumbs-down-clicked"
                 const postRequest = {
@@ -133,21 +134,29 @@
                     },
                     body: JSON.stringify({ action: 'downvote', task: 'add' })
                 }
-                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest)
-                document.getElementById(`downvote-count-${id}`).textContent = Number(document.getElementById(`downvote-count-${id}`).textContent) + 1
+                fetch(`/users/${userId}/suggestions/${id}/vote`, postRequest).then(location.reload())
             }
         }
     }
 
-    function getVoteCount(upVote, id, downVote) {
-    const up = upVote.split(',').filter(value => value !== '')
-    document.getElementById(`upvote-count-${id}`).textContent = up.length
-    const down = downVote.split(',').filter(value => value !== '')
-    document.getElementById(`downvote-count-${id}`).textContent = down.length
-    console.log(upVote, downVote)
-    }
+    function getVoteCount(upVote, id, downVote, userId, creator) {
+        const up = upVote.split(',').filter(value => value !== '')
+        document.getElementById(`upvote-count-${id}`).textContent = up.length
+        const down = downVote.split(',').filter(value => value !== '')
+        document.getElementById(`downvote-count-${id}`).textContent = down.length
 
-    $(function() {
+        if (up.includes(`${userId}`)) {
+            document.getElementById(`upvote-${id}`).className = "far fa-thumbs-up thumbs-up-clicked"
+        }
+        if (down.includes(`${userId}`)) {
+            document.getElementById(`downvote-${id}`).className = "far fa-thumbs-down thumbs-down-clicked"
+        }
+        if (creator == userId) {
+            document.getElementById(`bin-${id}`).style.display = "inline";
+
+        }
+    }
+    $(function () {
         $('#count[onload]').trigger('onload')
     })
 

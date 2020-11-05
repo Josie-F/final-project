@@ -8,18 +8,6 @@ const { request } = require("express")
 
 const app = express()
 
-// const handlebars = expressHandlebars({
-//     handlebars: allowInsecurePrototypeAccess(Handlebars)
-// })
-
-// app.use(express.static('public')) //this is a folder name that you will save your html etc files in. 
-// app.engine('handlebars', handlebars)
-// app.set("view engine", "handlebars")
-// //Insert congiguration for handling form POST requests:
-// app.use(express.urlencoded({ extended: true }))
-// app.use(express.json())
-
-
 //Custom handlebars
 const hbs = expressHandlebars.create({
     helpers: {
@@ -37,26 +25,6 @@ app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-
-
-//---Custom handlebars
-// const hbs = expressHandlebars.create({
-//     helpers: {
-//         taskAvatar: function (task, users) {
-//             if(task.UserId) {
-//                 return users.image;
-//             }
-//         }
-//     }, 
-//     handlebars: allowInsecurePrototypeAccess(Handlebars)
-// })
-
-// app.use(express.static('public'))
-// app.engine('handlebars', hbs.engine)
-// app.set('view engine', 'handlebars')
-// app.use(express.urlencoded({ extended: true }))
-// app.use(express.json())
-
 
 //-----ROUTES-------
 // Render landing page
@@ -207,7 +175,18 @@ app.post('/users/:user_id/boards/:board_id/suggestions/create', async(req, res) 
 
         res.redirect(`/users/${user.id}/boards/${board.id}/suggestions`)
     })
-    //Vote 
+    //Delete suggestions 
+app.get('/users/:user_id/boards/:board_id/suggestions/:suggestion_id/delete', async(req, res) => {
+    const board = await Board.findByPk(req.params.board_id)
+    const user = await User.findByPk(req.params.user_id)
+    const suggestion = await Suggestion.findByPk(req.params.suggestion_id)
+    await suggestion.destroy()
+
+    res.redirect(`/users/${user.id}/boards/${board.id}/suggestions`)
+})
+
+
+//Vote 
 app.post('/users/:user_id/suggestions/:suggestion_id/vote', async(req, res) => {
     const action = req.body.action;
     const task = req.body.task;
@@ -244,31 +223,6 @@ async function downVote(task, userId, suggestionId) {
         await suggestion.update({ downVote: removeDownVote })
     }
 }
-//     //Upvote 
-// app.post('/users/:user_id/suggestions/:suggestion_id/upvote', async(req, res) => {
-//         const suggestion = await Suggestion.findByPk(req.params.suggestion_id)
-//         if (suggestion.upVote.indexOf(`,${req.params.user_id},`) === -1) {
-//             const upvotes = suggestion.upVote + `,${req.params.user_id},`
-//             await suggestion.update({ upVote: upvotes })
-//         } else {
-//             const removeUpVote = suggestion.upVote.replace(`,${req.params.user_id},`, '')
-//             console.log('remov')
-//             await suggestion.update({ upVote: removeUpVote })
-//         }
-//         res.send()
-//     })
-//     //Downvote
-// app.post('/users/:user_id/suggestions/:suggestion_id/downvote', async(req, res) => {
-//     const suggestion = await Suggestion.findByPk(req.params.suggestion_id)
-//     if (suggestion.downVote.indexOf(`,${req.params.user_id},`) === -1) {
-//         const downvotes = suggestion.downVote + `,${req.params.user_id},`
-//         await suggestion.update({ downVote: downvotes })
-//     } else {
-//         const removeDownVote = suggestion.downVote.replace(`,${req.params.user_id},`, '')
-//         await suggestion.update({ downVote: removeDownVote })
-//     }
-//     res.send()
-// })
 
 //this is the point where the server is initialised. 
 app.listen(process.env.PORT || 3000, () => {

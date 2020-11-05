@@ -66,12 +66,11 @@ a:visited {
 
 .suggest-text-k {
     border: 1px solid #999999;
-    margin-top: .5rem;
+    margin: 1rem;
+    margin-bottom: 1rem !important;
     padding: .5rem;
     border-radius: .5rem;
     background-color: #f8f9fa;
-    margin-left: 1rem;
-    margin-right: 1rem;
 }
 
 #board-title-k {
@@ -137,6 +136,16 @@ a:visited {
     box-shadow: 3px 3px 5px #737373;
     background-color: #5d495488;
     margin: 1rem;
+}
+
+.suggest-div {
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.suggest-div-web {
+    display: none;
 }
 
 .btn-k:hover {
@@ -402,6 +411,15 @@ h4 {
     color: red;
 }
 
+.vote-placement {
+    display: inherit;
+    text-align: right;
+}
+
+.sign-out {
+    font-size: medium;
+}
+
 @media screen and (min-width: 40em) {
     .select-user-form-j {
         width: 60vw;
@@ -411,6 +429,12 @@ h4 {
     }
     .edit-user-form-j {
         width: 60vw;
+    }
+    .suggestion-board-j {
+        width: 50%;
+        justify-content: center;
+        margin: auto;
+        margin-top: 3rem;
     }
 }
 
@@ -423,6 +447,26 @@ h4 {
     }
     .edit-user-form-j {
         width: 30vw;
+    }
+    .suggest-div {
+        display: none;
+    }
+    .suggest-div-web {
+        display: block;
+        margin: none;
+        position: relative;
+        text-align: right;
+        float: right;
+    }
+    .suggestion-board-j {
+        width: 50%;
+        justify-content: center;
+        margin: auto;
+        margin-top: 3rem;
+    }
+    .vote-placement {
+        display: inline;
+        float: right;
     }
 }
 
@@ -451,7 +495,18 @@ h4 {
 
 /*---Tablet---*/
 
-@media screen and (min-width: 768px) and (max-width: 1023px) {}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .suggest-div {
+        display: none
+    }
+    .suggest-div-web {
+        display: block;
+        margin: none;
+        position: relative;
+        text-align: right;
+        float: right;
+    }
+}
 
 
 /*---Ipad Pro---*/
