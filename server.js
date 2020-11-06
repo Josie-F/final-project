@@ -91,7 +91,10 @@ app.get('/users/:user_id/boards/:board_id', async(req, res) => {
         const board = await Board.findByPk(req.params.board_id)
         const users = await User.findAll({
             include: 'tasks',
-            nest: true
+            nest: true,
+            order: [
+                ['id', 'ASC']
+            ]
         })
         const tasks = await board.getTasks({ include: { model: User } })
         const user = await User.findByPk(req.params.user_id)
